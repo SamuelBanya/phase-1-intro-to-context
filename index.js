@@ -1,4 +1,6 @@
 function createEmployeeRecord(employeeArray) {
+  console.log("--------------------------------------");
+  console.log("Inside createEmployeeRecord() function");
   console.log("employeeArray: ", employeeArray);
   let firstName = employeeArray[0];
   let familyName = employeeArray[1];
@@ -22,18 +24,12 @@ function createEmployeeRecord(employeeArray) {
   employeeRecord["timeInEvents"] = timeInEvents;
   employeeRecord["timeOutEvents"] = timeOutEvents;
 
-  // console.log("employeeRecord['firstName']: ", employeeRecord["firstName"]);
-  // console.log("employeeRecord['familyName']): ", employeeRecord["familyName"]);
-  // console.log("employeeRecord['titleName']): ", employeeRecord["titleName"]);
-  // console.log("employeeRecord['payPerHour'])", employeeRecord["payPerHour"]);
-  // console.log("employeeRecord['timeInEvents'])", employeeRecord["timeInEvents"]);
-  // console.log("employeeRecord['timeOutEvents'])", employeeRecord["timeOutEvents"]);
-
   return employeeRecord;
-
 }
 
 function createEmployeeRecords(employeeRecordsArray) {
+  console.log("--------------------------------------");
+  console.log("Inside createEmployeeRecords() function");
   let employeeObjectsArray = [];
   employeeRecordsArray.forEach((record) => {
     console.log("record: ", record);
@@ -58,64 +54,187 @@ function createEmployeeRecords(employeeRecordsArray) {
 }
 
 function createTimeInEvent(recordObject, dateStamp) {
-  // Goal:
-  // We need to take in the 'dateStamp' which is a date time stamp
-  // We need to use .slice() accordingly on this to get different sections of the time stamp
-  // We need to then create a new object to encapsulate the time stamp components
-  // We then need to add the object we just created to an array
-  console.log("createTimeInEvent() function");
+  console.log("--------------------------------------");
+  console.log("Inside createTimeInEvent() function");
   console.log("recordObject: ", recordObject);
   console.log("dateStamp: ", dateStamp);
-  let timeInEvents = [];
-  let timeObject = {};
-  timeObject["type"] = "TimeIn";
-  // Format for date time stamp:
-  // ex: YYYY-MM-DD 800
-  // First four characters: YYYY --> [0, 3]
-  // Next two characters: MM --> [5, 6]
-  // Next two characters: DD --> [8, 9]
-  // Remaining: Hour --> [11, array.length]
-  timeObject["date"] = dateStamp.slice(0, 10);
-  timeObject["hour"] = parseInt(dateStamp.slice(11, dateStamp.length));
-  timeInEvents.push(timeObject);
-  recordObject["timeInEvents"] = timeInEvents;
+  if (recordObject["timeInEvents"]) {
+    console.log("timeInEvents array is already present in recordObject");
 
+    let timeInEvents = recordObject["timeInEvents"];
+    console.log("timeInEvents array is already present in recordObject");
 
-  console.log("timeObject: ", timeObject);
-  console.log("timeInEvents: ", timeInEvents);
-  console.log("recordObject: ", recordObject);
+    let timeObject = {};
+    timeObject["type"] = "TimeIn";
+    timeObject["date"] = dateStamp.slice(0, 10);
+    timeObject["hour"] = parseInt(dateStamp.slice(11, dateStamp.length));
+    timeInEvents.push(timeObject);
+    recordObject["timeInEvents"] = timeInEvents;
 
+    return recordObject;
+  }
+  else {
+    let timeInEvents = [];
+    let timeObject = {};
+    timeObject["type"] = "TimeIn";
+    timeObject["date"] = dateStamp.slice(0, 10);
+    timeObject["hour"] = parseInt(dateStamp.slice(11, dateStamp.length));
+    timeInEvents.push(timeObject);
+    recordObject["timeInEvents"] = timeInEvents;
+
+    console.log("timeObject: ", timeObject);
+    console.log("timeInEvents: ", timeInEvents);
+    console.log("recordObject: ", recordObject);
+  }
   return recordObject;
 }
 
 function createTimeOutEvent(recordObject, dateStamp) {
-  console.log("createTimeInEvent() function");
+  console.log("--------------------------------------");
+  console.log("Inside createTimeOutEvent() function");
   console.log("recordObject: ", recordObject);
   console.log("dateStamp: ", dateStamp);
-  let timeOutEvents = [];
-  let timeObject = {};
-  timeObject["type"] = "TimeOut";
-  timeObject["date"] = dateStamp.slice(0, 10);
-  timeObject["hour"] = parseInt(dateStamp.slice(11, dateStamp.length));
-  timeOutEvents.push(timeObject);
-  recordObject["timeOutEvents"] = timeOutEvents;
+  if (recordObject["timeOutEvents"]) {
+    let timeOutEvents = recordObject["timeOutEvents"];
+    console.log("timeOutEvents array is already present in recordObject");
 
-  console.log("timeObject: ", timeObject);
-  console.log("timeOutEvents: ", timeOutEvents);
+    let timeObject = {};
+    timeObject["type"] = "TimeOut";
+    timeObject["date"] = dateStamp.slice(0, 10);
+    timeObject["hour"] = parseInt(dateStamp.slice(11, dateStamp.length));
+    timeOutEvents.push(timeObject);
+    recordObject["timeOutEvents"] = timeOutEvents;
+
+    return recordObject;
+  }
+  else {
+    let timeOutEvents = [];
+    let timeObject = {};
+    timeObject["type"] = "TimeOut";
+    timeObject["date"] = dateStamp.slice(0, 10);
+    timeObject["hour"] = parseInt(dateStamp.slice(11, dateStamp.length));
+    timeOutEvents.push(timeObject);
+    recordObject["timeOutEvents"] = timeOutEvents;
+
+    console.log("timeObject: ", timeObject);
+    console.log("timeOutEvents: ", timeOutEvents);
+    console.log("recordObject: ", recordObject);
+
+    return recordObject;
+  }
+}
+
+function hoursWorkedOnDate(recordObject, dateStamp) {
+  console.log("--------------------------------------");
+  console.log("hoursWorkedOnDate() function: ");
   console.log("recordObject: ", recordObject);
+  console.log("dateStamp: ", dateStamp);
+  console.log('typeof(recordObject["timeInEvents"]): ', typeof (recordObject["timeInEvents"]));
+  console.log('typeof(recordObject["timeOutEvents"]): ', typeof (recordObject["timeOutEvents"]));
 
-  return recordObject;
+  console.log('recordObject["timeInEvents"][0]["hour"]: ', recordObject["timeInEvents"][0]["hour"]);
+  console.log('recordObject["timeOutEvents"][0]["hour"]: ', recordObject["timeOutEvents"][0]["hour"]);
+
+  let timeIn = recordObject["timeInEvents"][0]["hour"];
+  let timeOut = recordObject["timeOutEvents"][0]["hour"];
+  let timeDifference = (timeOut - timeIn);
+
+  // Convert to a string so that we can rip out trailing zeroes later on to
+  // deal with '24 Hour' clock scenario:
+  timeDifference = timeDifference.toString();
+  console.log("timeDifference.length: ", timeDifference.length);
+
+  if (timeDifference.length > 2) {
+    timeDifference = timeDifference.slice(0, timeDifference.length - 2);
+  }
+
+  let hoursWorked = parseInt(timeDifference, 10);
+
+  console.log("hoursWorked: ", hoursWorked);
+
+  return hoursWorked;
 
 }
 
-function hoursWorkedOnDate() {
+function wagesEarnedOnDate(recordObject, dateStamp) {
+  console.log("--------------------------------------");
+  console.log("wagesEarnedOnDate() function called");
+  console.log("recordObject: ", recordObject);
+  console.log("dateStamp: ", dateStamp);
 
+  let hoursWorked = hoursWorkedOnDate(recordObject, dateStamp);
+  console.log("hoursWorked (from within wagesEarnedOnDate() function): ", hoursWorked);
+  let payPerHour = recordObject["payPerHour"];
+  console.log("payPerHour: ", payPerHour);
+  let wagesEarned = parseInt(hoursWorked * payPerHour, 10);
+
+  console.log("wagesEarned: ", wagesEarned);
+
+  return wagesEarned;
+}
+
+// TODO: Check 'allWagesFor' function and see why its causing the 'learn test' to fail:
+function allWagesFor(recordObject) {
+  console.log("--------------------------------------");
+  console.log("allWagesFor() function called");
+  console.log("recordObject: ", recordObject);
+
+  // GOAL:
+  // Create a new object for each of the values present
+  // Then, use the 'date' parameter for each object to then call the 'wagesEarnedOnDate()' function
+  // Aggregate the entire sum of the wages made and return it
+  let timeInEventsArrayLength = recordObject["timeInEvents"].length;
+
+  let newRecordObjectsArray = [];
+
+  for (let i = 0; i < timeInEventsArrayLength; i++) {
+    console.log("i: ", i);
+
+    let tempTimeInEventsArray = [];
+    let tempTimeOutEventsArray = [];
+
+    let tempTimeInEvents = recordObject["timeInEvents"][i];
+    let tempTimeOutEvents = recordObject["timeOutEvents"][i];
+    let newRecordObject = { ...recordObject };
+
+    tempTimeInEventsArray.push(tempTimeInEvents);
+    tempTimeOutEventsArray.push(tempTimeOutEvents);
+
+    newRecordObject["timeInEvents"] = tempTimeInEventsArray;
+    newRecordObject["timeOutEvents"] = tempTimeOutEventsArray;
+
+    console.log("newRecordObject: ", newRecordObject);
+
+    newRecordObjectsArray.push(newRecordObject);
+  }
+
+  let wageSum = 0;
+
+  console.log("newRecordObjectsArray: ", newRecordObjectsArray);
+
+  newRecordObjectsArray.forEach((object) => {
+    console.log("Inside newRecordObjectArray.forEach() loop: ");
+    console.log("object: ", object);
+    // Use the timeInEvents["date"] key value accordingly:
+    console.log('object["timeInEvents"][0]["date"]: ', object["timeInEvents"][0]["date"]);
+
+    let dateStamp = object["timeInEvents"][0]["date"];
+    console.log('dateStamp (object["timeInEvents"][0]["date"]): ', dateStamp);
+
+    console.log("wagesEarnedOnDate() function called within allWagesFor() function: ");
+    wageSum += wagesEarnedOnDate(object, dateStamp);
+  });
+
+  console.log("wageSum: ", wageSum);
+
+  return wageSum;
 }
 
 createEmployeeRecord(["Gray", "Worm", "Security", 1]);
 createEmployeeRecords([["Gray", "Worm", "Security", 1], ["sam", "banya", "support engineer", 35], ["tina", "belcher", "horse whisperer", 25]]);
 
-console.log("New Test: ");
+console.log("--------------------------------------");
+console.log("testFor 'dataEmployees' object: ");
 let dataEmployees = [
   ["Thor", "Odinsson", "Electrical Engineer", 45],
   ["Loki", "Laufeysson-Odinsson", "HR Representative", 35],
@@ -127,11 +246,59 @@ let dataEmployees = [
   ["Julius", "Caesar", "General", 27],
   ["Rafiki", "", "Aide", 10],
   ["Simba", "", "King", 100]
-]
+];
 
 createEmployeeRecords(dataEmployees);
 
-employeeRecord = ["Byron", "Poodle", "Mascot", 3];
-dateTimeStamp = "2014-02-28 1400";
+let employeeRecord = ["Byron", "Poodle", "Mascot", 3];
+let dateTimeStamp = "2014-02-28 1400";
 createTimeInEvent(employeeRecord, dateTimeStamp);
 createTimeOutEvent(employeeRecord, dateTimeStamp);
+
+console.log("--------------------------------------");
+console.log("Test for 'hoursWorkedOnDateExampleRecord' object: ");
+let employeeRecord2 = ["Maxwell", "Sheffield", "Broadway Produceer", 10];
+let dateTimeInStamp2 = "2022-05-27 1500";
+let dateTimeOutStamp2 = "2022-05-27 1700";
+let hoursWorkedOnDateExampleRecord = createEmployeeRecord(employeeRecord2);
+console.log("hoursWorkedOnDateExampleRecord after createEmployeeRecord() function: ", hoursWorkedOnDateExampleRecord);
+hoursWorkedOnDateExampleRecord = createTimeInEvent(hoursWorkedOnDateExampleRecord, dateTimeInStamp2);
+console.log("hoursWorkedOnDateExampleRecord after createTimeInEvent() function: ", hoursWorkedOnDateExampleRecord);
+hoursWorkedOnDateExampleRecord = createTimeOutEvent(hoursWorkedOnDateExampleRecord, dateTimeOutStamp2);
+console.log("hoursWorkedOnDateExampleRecord after createTimeOutEvent() function: ", hoursWorkedOnDateExampleRecord);
+
+let dateTimeStamp3 = "2022-05-28";
+
+// Tests for various functions:
+// 'hoursWorkedOnDate()' function:
+console.log("--------------------------------------");
+console.log("Testing hoursWorkedOnDate() function");
+let hoursWorked = hoursWorkedOnDate(hoursWorkedOnDateExampleRecord, dateTimeStamp3);
+
+// 'wagesEarnedOnDate()' function:
+let wagesEarnedTestRecord = ["Julius", "Caesar", "General", 27];
+let wagesEarnedTimeIn = "0044-03-15 0900";
+let wagesEarnedTimeOut = "0044-03-15 1100";
+let wagesEarnedDateStamp = "0044-03-15";
+
+wagesEarnedTestRecord = createEmployeeRecord(wagesEarnedTestRecord);
+wagesEarnedTestRecord = createTimeInEvent(wagesEarnedTestRecord, wagesEarnedTimeIn);
+wagesEarnedTestRecord = createTimeOutEvent(wagesEarnedTestRecord, wagesEarnedTimeOut);
+wagesEarnedOnDate(wagesEarnedTestRecord, wagesEarnedDateStamp);
+
+// 'allWagesFor()' function:
+console.log("--------------------------------------");
+console.log("Testing allWagesFor() function:");
+let allWagesForTestRecord = ["Julius", "Caesar", "General", 27];
+let allWagesForTimeIn1 = "0044-03-14 0900";
+let allWagesForTimeOut1 = "0044-03-14 2100";
+let allWagesForTimeIn2 = "0044-03-15 0900";
+let allWagesForTimeOut2 = "0044-03-15 1100";
+
+allWagesForTestRecord = createEmployeeRecord(allWagesForTestRecord);
+allWagesForTestRecord = createTimeInEvent(allWagesForTestRecord, allWagesForTimeIn1);
+allWagesForTestRecord = createTimeOutEvent(allWagesForTestRecord, allWagesForTimeOut1);
+allWagesForTestRecord = createTimeInEvent(allWagesForTestRecord, allWagesForTimeIn2);
+allWagesForTestRecord = createTimeOutEvent(allWagesForTestRecord, allWagesForTimeOut2);
+
+allWagesFor(allWagesForTestRecord);
