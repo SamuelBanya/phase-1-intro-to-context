@@ -85,8 +85,9 @@ function createTimeInEvent(recordObject, dateStamp) {
     console.log("timeObject: ", timeObject);
     console.log("timeInEvents: ", timeInEvents);
     console.log("recordObject: ", recordObject);
+
+    return recordObject;
   }
-  return recordObject;
 }
 
 function createTimeOutEvent(recordObject, dateStamp) {
@@ -173,61 +174,34 @@ function wagesEarnedOnDate(recordObject, dateStamp) {
   return wagesEarned;
 }
 
-// TODO: Check 'allWagesFor' function and see why its causing the 'learn test' to fail:
 function allWagesFor(recordObject) {
   console.log("--------------------------------------");
   console.log("allWagesFor() function called");
   console.log("recordObject: ", recordObject);
 
-  // GOAL:
-  // Create a new object for each of the values present
-  // Then, use the 'date' parameter for each object to then call the 'wagesEarnedOnDate()' function
-  // Aggregate the entire sum of the wages made and return it
-  let timeInEventsArrayLength = recordObject["timeInEvents"].length;
-
-  let newRecordObjectsArray = [];
-
-  for (let i = 0; i < timeInEventsArrayLength; i++) {
-    console.log("i: ", i);
-
-    let tempTimeInEventsArray = [];
-    let tempTimeOutEventsArray = [];
-
-    let tempTimeInEvents = recordObject["timeInEvents"][i];
-    let tempTimeOutEvents = recordObject["timeOutEvents"][i];
-    let newRecordObject = { ...recordObject };
-
-    tempTimeInEventsArray.push(tempTimeInEvents);
-    tempTimeOutEventsArray.push(tempTimeOutEvents);
-
-    newRecordObject["timeInEvents"] = tempTimeInEventsArray;
-    newRecordObject["timeOutEvents"] = tempTimeOutEventsArray;
-
-    console.log("newRecordObject: ", newRecordObject);
-
-    newRecordObjectsArray.push(newRecordObject);
-  }
+  // Grab the dates:
+  let dateArray = [];
+  recordObject["timeInEvents"].forEach((element) => {
+    console.log("element: ", element);
+    let dateElement = element["date"];
+    console.log("dateElement: ", dateElement);
+    dateArray.push(dateElement);
+  });
 
   let wageSum = 0;
 
-  console.log("newRecordObjectsArray: ", newRecordObjectsArray);
-
-  newRecordObjectsArray.forEach((object) => {
-    console.log("Inside newRecordObjectArray.forEach() loop: ");
-    console.log("object: ", object);
-    // Use the timeInEvents["date"] key value accordingly:
-    console.log('object["timeInEvents"][0]["date"]: ', object["timeInEvents"][0]["date"]);
-
-    let dateStamp = object["timeInEvents"][0]["date"];
-    console.log('dateStamp (object["timeInEvents"][0]["date"]): ', dateStamp);
-
-    console.log("wagesEarnedOnDate() function called within allWagesFor() function: ");
-    wageSum += wagesEarnedOnDate(object, dateStamp);
+  // TODO: Fix math involved with 'wagesEarned':
+  console.log("Inside .forEach() loop for 'dateArray': ");
+  dateArray.forEach((dateElement) => {
+    console.log("dateElement: ", dateElement);
+    // Call 'wagesEarnedOnDate()' function:
+    let wagesEarned = wagesEarnedOnDate(recordObject, dateElement);
+    wageSum += wagesEarned;
   });
 
   console.log("wageSum: ", wageSum);
 
-  return wageSum;
+  // return wageSum;
 }
 
 createEmployeeRecord(["Gray", "Worm", "Security", 1]);
